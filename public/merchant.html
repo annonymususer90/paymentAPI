@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Merchant</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container">
+        <div class="merchant_table">
+            <table class="table table-striped" id="merchantTable">
+                <thead>
+                    <tr>
+                        <th scope="col">Sr No.</th>
+                        <th scope="col">Merchant Name</th>
+                        <th scope="col">API Key</th>
+                        <th scope="col">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                </tbody>
+            </table>
+        </div>
+
+        <div class="add_merchant_form">
+            <form action="" name="merchantForm">
+                <label for="merchant_name"><b>Merchant Name :</b></label>
+                <input type="text" name="merchant_name" id="merchant_name">
+                <label for="api_key"><b>API Key :</b></label>
+                <input type="text" name="api_key" id="api_key">
+                <button type="submit" class="btn btn-warning" onclick="addmerchant(event)">Add Merchant</button>
+            </form>
+        </div>
+    </div>
+    <script>
+        function showdata() {
+
+            fetch('/get_merchants')
+                .then(response => response.json())
+                .then(data => {
+                    const tableBody = document.getElementById('merchantTable').getElementsByTagName('tbody')[0];
+
+
+                    tableBody.innerHTML = '';
+
+
+                    data.forEach((merchant, index) => {
+                        const row = tableBody.insertRow(index);
+                        const cell1 = row.insertCell(0);
+                        const cell2 = row.insertCell(1);
+                        const cell3 = row.insertCell(2);
+                        const cell4 = row.insertCell(3);
+                        const cell5 = row.insertCell(4);
+
+                        cell1.innerHTML = index + 1;
+                        cell2.innerHTML = merchant.name;
+                        cell3.innerHTML = merchant.key;
+                        cell4.innerHTML = `<input type="radio" id="${merchant.name}" name="merchantRadio" value="${merchant.name}" ${merchant.status ? 'checked' : ''} onclick="enablemerchant(event)"> Enable`;
+                        cell5.innerHTML = `
+                            ${!merchant.status ? '<button class="btn btn-danger" onclick="deleteMerchant(event)">Delete</button>' : ''}
+                            `;
+                    });
+                })
+                .catch(error => console.error('Error fetching data:', error));
+        }
+
+        document.addEventListener("DOMContentLoaded", showdata);
+
+        function enablemerchant(event) {
+            const postData = { name: event.target.value };
+            // Configuration for the Fetch API
+            const requestOptions = {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json', // Specify the content type as JSON
+                    // Add any other headers as needed
+                },
+                body: JSON.stringify(postData), // Convert the data to JSON format
+            };
+            fetch('/activate_merchant', requestOptions).then(showdata());
+        }
+
+        function addmerchant(event) {
+            event.preventDefault();
+            const name = document.getElementById('merchant_name');
+            const key = document.getElementById('api_key');
+
+            if (!name.value || !key.value) {
+                alert('empty data not allowed');
+                return;
+            }
+
+            // Configuration for the Fetch API
+            const requestOptions = {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json', // Specify the content type as JSON
+                    // Add any other headers as needed
+                },
+                body: JSON.stringify({ name: name.value, key: key.value }), // Convert the data to JSON format
+            };
+            fetch('/add_merchant', requestOptions).then(showdata());
+
+            document.merchantForm.reset();
+        }
+
+        function deleteMerchant(event) {
+            if (!confirm('are you sure?')) return;
+            const name = event.target.parentElement.parentElement.children[3].firstChild.value;
+            const requestOptions = {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json', // Specify the content type as JSON
+                    // Add any other headers as needed
+                },
+                body: JSON.stringify({ name: name }), // Convert the data to JSON format
+            };
+            fetch('/remove_merchant', requestOptions).then(showdata());
+        }
+
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+        crossorigin="anonymous"></script>
+
+</body>
+
+</html>
