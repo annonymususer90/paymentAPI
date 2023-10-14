@@ -109,7 +109,7 @@ app.post('/webhook', (req, res) => {
     // Perform any desired actions or validations here
 
     // Send a response to the webhook
-    res.status(200).send('Webhook received successfully');
+    res.status(200).send();
 });
 
 app.post('/add_merchant', (req, res) => {
