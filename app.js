@@ -51,7 +51,8 @@ app.post('/create_order', async (req, res) => {
             status: response.data.status,
             msg: response.data.msg,
             data: {
-                order_id: response.data.data.order_id
+                order_id: response.data.data.order_id,
+                payment_url: response.data.data.payment_url
             }
         };
 
