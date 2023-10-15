@@ -1,9 +1,10 @@
 const express = require('express');
 const axios = require('axios');
 const path = require('path');
+const bodyParser = require('body-parser');
 
 const app = express();
-const port = 3000;
+const port = 5500;
 
 const merchants = new Map();
 const isActive = {
@@ -13,7 +14,7 @@ const isActive = {
 
 
 app.use(express.json());
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(bodyParser.urlencoded({ extended: true }));
 app.get('/', (req, res) => {
     const filePath = path.join(__dirname, 'public', 'merchant.html');
     res.sendFile(filePath);
@@ -50,7 +51,8 @@ app.post('/create_order', async (req, res) => {
             status: response.data.status,
             msg: response.data.msg,
             data: {
-                order_id: response.data.data.order_id
+                order_id: response.data.data.order_id,
+                payment_url: response.data.data.payment_url
             }
         };
 
@@ -59,6 +61,56 @@ app.post('/create_order', async (req, res) => {
         console.error('Error:', error.message);
         res.status(500).json({ error: 'Internal Server Error' });
     }
+});
+
+
+
+// Define a route to handle the webhook POST request
+app.post('/webhook', (req, res) => {
+    const {
+        amount,
+        client_txn_id,
+        createdAt,
+        customer_email,
+        customer_mobile,
+        customer_name,
+        customer_vpa,
+        id,
+        p_info,
+        redirect_url,
+        remark,
+        status,
+        txnAt,
+        udf1,
+        udf2,
+        udf3,
+        upi_txn_id,
+    } = req.body;
+
+    // Process the received data here
+    console.log('Received webhook data:');
+    console.log('Amount:', amount);
+    console.log('Client Transaction ID:', client_txn_id);
+    console.log('Created At:', createdAt);
+    console.log('Customer Email:', customer_email);
+    console.log('Customer Mobile:', customer_mobile);
+    console.log('Customer Name:', customer_name);
+    console.log('Customer VPA:', customer_vpa);
+    console.log('Order ID (UPI Gateway):', id);
+    console.log('P Info:', p_info);
+    console.log('Redirect URL:', redirect_url);
+    console.log('Remark:', remark);
+    console.log('Status:', status);
+    console.log('Transaction Date:', txnAt);
+    console.log('UDF1:', udf1);
+    console.log('UDF2:', udf2);
+    console.log('UDF3:', udf3);
+    console.log('UPI Transaction ID:', upi_txn_id);
+
+    // Perform any desired actions or validations here
+
+    // Send a response to the webhook
+    res.status(200).send();
 });
 
 app.post('/add_merchant', (req, res) => {
