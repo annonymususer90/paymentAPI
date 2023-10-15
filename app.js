@@ -13,6 +13,7 @@ const isActive = {
 
 
 app.use(express.json());
+app.use(express.static(path.join(__dirname, 'public')));
 app.get('/', (req, res) => {
     const filePath = path.join(__dirname, 'public', 'merchant.html');
     res.sendFile(filePath);
