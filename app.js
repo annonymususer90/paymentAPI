@@ -63,9 +63,6 @@ app.post('/create_order', async (req, res) => {
     }
 });
 
-
-
-// Define a route to handle the webhook POST request
 app.post('/webhook', (req, res) => {
     const {
         amount,
@@ -87,29 +84,27 @@ app.post('/webhook', (req, res) => {
         upi_txn_id,
     } = req.body;
 
-    // Process the received data here
-    console.log('Received webhook data:');
-    console.log('Amount:', amount);
-    console.log('Client Transaction ID:', client_txn_id);
-    console.log('Created At:', createdAt);
-    console.log('Customer Email:', customer_email);
-    console.log('Customer Mobile:', customer_mobile);
-    console.log('Customer Name:', customer_name);
-    console.log('Customer VPA:', customer_vpa);
-    console.log('Order ID (UPI Gateway):', id);
-    console.log('P Info:', p_info);
-    console.log('Redirect URL:', redirect_url);
-    console.log('Remark:', remark);
-    console.log('Status:', status);
-    console.log('Transaction Date:', txnAt);
-    console.log('UDF1:', udf1);
-    console.log('UDF2:', udf2);
-    console.log('UDF3:', udf3);
-    console.log('UPI Transaction ID:', upi_txn_id);
 
-    // Perform any desired actions or validations here
+    // console.log('Received webhook data:');
+    // console.log('Amount:', amount);
+    // console.log('Client Transaction ID:', client_txn_id);
+    // console.log('Created At:', createdAt);
+    // console.log('Customer Email:', customer_email);
+    // console.log('Customer Mobile:', customer_mobile);
+    // console.log('Customer Name:', customer_name);
+    // console.log('Customer VPA:', customer_vpa);
+    // console.log('Order ID (UPI Gateway):', id);
+    // console.log('P Info:', p_info);
+    // console.log('Redirect URL:', redirect_url);
+    // console.log('Remark:', remark);
+    // console.log('Status:', status);
+    // console.log('Transaction Date:', txnAt);
+    // console.log('UDF1:', udf1);
+    // console.log('UDF2:', udf2);
+    // console.log('UDF3:', udf3);
+    // console.log('UPI Transaction ID:', upi_txn_id);
 
-    // Send a response to the webhook
+
     res.status(200).send();
 });
 
